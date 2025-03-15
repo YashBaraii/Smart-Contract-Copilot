@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "path": "^0.12.7",
+    "vite_react_shadcn_ts": "file:.."
+  },
+  "devDependencies": {
+    "vite": "^6.2.2"
+  }
+}
