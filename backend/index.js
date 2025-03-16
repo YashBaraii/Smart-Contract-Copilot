@@ -14,11 +14,16 @@ const app = express();
 
 const _dirname = path.resolve();
 
+const corsOptions = {
+  origin: "https://smart-contract-copilot.onrender.com",
+  credentials: true
+};
+
 // Connect to MongoDB
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes

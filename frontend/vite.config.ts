@@ -19,4 +19,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"), // Fixed alias path
     },
   },
+  define: {
+    "import.meta.env.VITE_API_BASE_URL": JSON.stringify("https://smart-contract-copilot.onrender.com"),
+  },
 });
