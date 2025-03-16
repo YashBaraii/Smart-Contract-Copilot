@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
     "start": "nodemon backend/index.js",
-    "server": "nodemon backend/index.js"
+    "dev": "nodemon backend/index.js"
   },
   "dependencies": {
     "@blockly/zoom-to-fit": "^5.0.18",
