@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileCode, ArrowRight, PlayCircle, Shield, Zap, Users, X } from "lucide-react";
+import { FileCode, ArrowRight, PlayCircle, Shield, Zap, Users, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const blockchainCompanies = [
   {
@@ -58,12 +64,36 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <Link to="/builder">
-              <Button className="bg-primary hover:bg-primary-dark text-white px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                Start Building for Free
-                <ArrowRight className="w-5 h-5 ml-2 animate-pulse" />
-              </Button>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="bg-primary hover:bg-primary-dark text-white px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                  Start Building for Free
+                  <ChevronDown className="w-5 h-5 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-secondary border-primary/20">
+                <DropdownMenuItem asChild>
+                  <Link to="/builder?lang=solidity" className="flex items-center cursor-pointer text-white hover:text-white">
+                    <img 
+                      src="https://cryptologos.cc/logos/ethereum-eth-logo.png" 
+                      alt="Solidity" 
+                      className="w-5 h-5 mr-2"
+                    />
+                    Solidity
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/builder?lang=move" className="flex items-center cursor-pointer text-white hover:text-white">
+                    <img 
+                      src="https://cryptologos.cc/logos/aptos-apt-logo.png" 
+                      alt="Move" 
+                      className="w-5 h-5 mr-2"
+                    />
+                    Move
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="outline"
               onClick={() => setShowDemo(true)}
