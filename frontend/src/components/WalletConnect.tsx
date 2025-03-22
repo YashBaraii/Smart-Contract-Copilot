@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
-import Web3 from "web3";
+import React, { useEffect, useState } from "react";
 
 interface WalletConnectProps {
   onWalletConnect?: (address: string) => void;
@@ -13,66 +12,30 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
   onError
 }) => {
   const [account, setAccount] = useState<string | null>(null);
-  const [web3, setWeb3] = useState<Web3 | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isPetraAvailable, setIsPetraAvailable] = useState(false);
 
-  const checkWalletConnection = useCallback(async () => {
-    if (window.ethereum) {
-      try {
-        const web3Instance = new Web3(window.ethereum);
-        const accounts = await web3Instance.eth.getAccounts();
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-          onWalletConnect?.(accounts[0]);
-        }
-        setWeb3(web3Instance);
-      } catch (error) {
-        console.error("Failed to check wallet connection:", error);
+  // Check if Petra wallet is available
+  useEffect(() => {
+    const checkPetraAvailability = () => {
+      const petra = (window as any).petra;
+      if (petra) {
+        console.log("Petra wallet detected");
+        setIsPetraAvailable(true);
+      } else {
+        console.log("Petra wallet not detected");
+        setIsPetraAvailable(false);
       }
-    }
-  }, [onWalletConnect]);
+    };
 
-  useEffect(() => {
-    checkWalletConnection();
-  }, [checkWalletConnection]);
-
-  useEffect(() => {
-    if (window.ethereum) {
-      // Handle account changes
-      window.ethereum.on("accountsChanged", (accounts: string[]) => {
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-          onWalletConnect?.(accounts[0]);
-        } else {
-          setAccount(null);
-          onWalletDisconnect?.();
-        }
-      });
-
-      // Handle chain changes
-      window.ethereum.on("chainChanged", (_chainId: string) => {
-        window.location.reload();
-      });
-
-      // Handle disconnect
-      window.ethereum.on("disconnect", () => {
-        setAccount(null);
-        onWalletDisconnect?.();
-      });
-    }
-
-    return () => {
-        if (window.ethereum) {
-          (window.ethereum as any).removeListener("accountsChanged", () => {});
-          (window.ethereum as any).removeListener("chainChanged", () => {});
-          (window.ethereum as any).removeListener("disconnect", () => {});
-        }
-      };
-  }, [onWalletConnect, onWalletDisconnect]);
+    checkPetraAvailability();
+    window.addEventListener('load', checkPetraAvailability);
+    return () => window.removeEventListener('load', checkPetraAvailability);
+  }, []);
 
   const connectWallet = async () => {
-    if (!window.ethereum) {
-      const errorMsg = "Please install MetaMask!";
+    if (!isPetraAvailable) {
+      const errorMsg = "Please install Petra wallet!";
       onError?.(errorMsg);
       alert(errorMsg);
       return;
@@ -80,17 +43,20 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
 
     setIsConnecting(true);
     try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      });
-      
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
-        onWalletConnect?.(accounts[0]);
-        
-        // Initialize Web3 after successful connection
-        const web3Instance = new Web3(window.ethereum);
-        setWeb3(web3Instance);
+      const petra = (window as any).petra;
+      console.log("Attempting to connect to Petra wallet...");
+
+      // Request connection using Petra's specific method
+      const response = await petra.connect();
+      console.log("Connection response:", response);
+
+      if (response && response.address) {
+        const address = response.address;
+        console.log("Successfully connected to:", address);
+        setAccount(address);
+        onWalletConnect?.(address);
+      } else {
+        throw new Error("No address returned from wallet");
       }
     } catch (error) {
       console.error("Failed to connect wallet:", error);
@@ -100,10 +66,64 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
     }
   };
 
-  const disconnectWallet = () => {
-    setAccount(null);
-    onWalletDisconnect?.();
+  const disconnectWallet = async () => {
+    if (!isPetraAvailable) return;
+
+    try {
+      const petra = (window as any).petra;
+      console.log("Attempting to disconnect...");
+      await petra.disconnect();
+      console.log("Successfully disconnected");
+    } catch (error) {
+      console.error("Failed to disconnect wallet:", error);
+    } finally {
+      setAccount(null);
+      onWalletDisconnect?.();
+    }
   };
+
+  // Set up event listeners
+  useEffect(() => {
+    if (!isPetraAvailable) return;
+
+    const petra = (window as any).petra;
+    
+    const handleAccountsChanged = (accounts: string[]) => {
+      console.log("Accounts changed event:", accounts);
+      if (accounts && accounts.length > 0) {
+        setAccount(accounts[0]);
+        onWalletConnect?.(accounts[0]);
+      } else {
+        setAccount(null);
+        onWalletDisconnect?.();
+      }
+    };
+
+    const handleChainChanged = () => {
+      console.log("Chain changed event");
+      window.location.reload();
+    };
+
+    const handleDisconnect = () => {
+      console.log("Disconnect event");
+      setAccount(null);
+      onWalletDisconnect?.();
+    };
+
+    // Add event listeners
+    petra.on("accountsChanged", handleAccountsChanged);
+    petra.on("chainChanged", handleChainChanged);
+    petra.on("disconnect", handleDisconnect);
+
+    // Cleanup
+    return () => {
+      if (petra.removeListener) {
+        petra.removeListener("accountsChanged", handleAccountsChanged);
+        petra.removeListener("chainChanged", handleChainChanged);
+        petra.removeListener("disconnect", handleDisconnect);
+      }
+    };
+  }, [onWalletConnect, onWalletDisconnect, isPetraAvailable]);
 
   return (
     <div className="flex items-center gap-2">
@@ -126,7 +146,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400"
           disabled={isConnecting}
         >
-          {isConnecting ? "Connecting..." : "Connect Wallet"}
+          {isConnecting ? "Connecting..." : "Connect Petra Wallet"}
         </button>
       )}
     </div>
