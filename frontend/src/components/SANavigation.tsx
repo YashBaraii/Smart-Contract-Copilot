@@ -15,29 +15,29 @@ interface NavigationProps {
 }
 
 const navLinks: NavLink[] = [
-  { name: 'Home', href: '/' },
+  { name: 'Home', href: '/security-audit' },
   { 
     name: 'Automated Security', 
     href: '#', 
     dropdown: [
-      { name: 'What is Automated Security?', href: '/automated-security' },
-      { name: 'Key Security Features', href: '/security-features' },
+      { name: 'What is Automated Security?', href: '/security-audit/automated-security' },
+      { name: 'Key Security Features', href: '/security-audit/security-features' },
     ] 
   },
   { 
     name: 'Implementation', 
     href: '#',
     dropdown: [
-      { name: 'Access Control', href: '/implementation/access-control' },
-      { name: 'Reentrancy Protection', href: '/implementation/reentrancy' },
-      { name: 'Input Validation', href: '/implementation/input-validation' },
-      { name: 'Transaction Limits', href: '/implementation/transaction-limits' },
-      { name: 'Logging & Auditing', href: '/implementation/logging' },
+      { name: 'Access Control', href: '/security-audit/implementation/access-control' },
+      { name: 'Reentrancy Protection', href: '/security-audit/implementation/reentrancy' },
+      { name: 'Input Validation', href: '/security-audit/implementation/input-validation' },
+      { name: 'Transaction Limits', href: '/security-audit/implementation/transaction-limits' },
+      { name: 'Logging & Auditing', href: '/security-audit/implementation/logging' },
     ] 
   },
-  { name: 'Testing', href: '/testing' },
-  { name: 'Resources', href: '/resources' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Testing', href: '/security-audit/testing' },
+  { name: 'Resources', href: '/security-audit/resources' },
+  { name: 'Blog', href: '/security-audit/blog' },
 ];
 
 const Navigation = ({ className }: NavigationProps) => {
@@ -69,7 +69,7 @@ const Navigation = ({ className }: NavigationProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <a href="/" className="flex-shrink-0 flex items-center">
+            <a href="/security-audit" className="flex-shrink-0 flex items-center">
               <div className="h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center">
                 <span className="text-white font-bold">AS</span>
               </div>

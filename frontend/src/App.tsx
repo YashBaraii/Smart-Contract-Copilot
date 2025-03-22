@@ -17,6 +17,12 @@ import GOIndex from "./pages/GOIndex";
 import GOGetStarted from "./pages/GOGetStarted";
 
 import SAIndex from "./pages/SAIndex";  
+import SAWhyAutomatedSecurity from "./pages/SAWhyAutomatedSecurity.tsx";
+import SAFeatures from "./pages/SAFeatures.tsx";
+import SAImplementation from "./pages/SAImplementation.tsx";
+import SATesting from "./pages/SATesting.tsx";
+import SAResources from "./pages/SAResources.tsx";
+import SABlog from "./pages/SABlog.tsx";
 
 import CodeGeneration from "./pages/SC-Index";
 // Builder-Specific Pages
@@ -77,7 +83,16 @@ function Layout() {
 
         {/* Security Audit */}
         <Route path="/security-audit" element={<ProtectedRoute><SAIndex /></ProtectedRoute>} />
-
+        <Route path="/security-audit/automated-security" element={<ProtectedRoute><SAWhyAutomatedSecurity /></ProtectedRoute>} />
+        <Route path="/security-audit/security-features" element={<ProtectedRoute><SAFeatures /></ProtectedRoute>} />
+        <Route path="/security-audit/implementation/access-control" element={<ProtectedRoute><SAImplementation /></ProtectedRoute>} />
+        <Route path="/security-audit/implementation/reentrancy" element={<ProtectedRoute><SAImplementation /></ProtectedRoute>} />
+        <Route path="/security-audit/implementation/input-validation" element={<ProtectedRoute><SAImplementation /></ProtectedRoute>} />
+        <Route path="/security-audit/implementation/transaction-limits" element={<ProtectedRoute><SAImplementation /></ProtectedRoute>} />
+        <Route path="/security-audit/implementation/logging" element={<ProtectedRoute><SAImplementation /></ProtectedRoute>} />
+        <Route path="/security-audit/testing" element={<ProtectedRoute><SATesting /></ProtectedRoute>} />
+        <Route path="/security-audit/resources" element={<ProtectedRoute><SAResources /></ProtectedRoute>} />
+        <Route path="/security-audit/blog" element={<ProtectedRoute><SABlog /></ProtectedRoute>} />
 
         {/* Smart ai code IDE */}
         <Route path="/code-generation" element={<ProtectedRoute><CodeGeneration /></ProtectedRoute>} />
