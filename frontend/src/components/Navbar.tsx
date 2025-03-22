@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, FileCode, Book, Lock, User, LogOut, Menu, X, MessageSquare } from "lucide-react";
+import { Home, FileCode, Book, Lock, User, LogOut, Menu, X, MessageSquare, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WalletConnect from "./WalletConnect";
 
@@ -100,6 +100,11 @@ const Navbar = () => {
                 <span>{item.text}</span>
               </button>
             ))}
+            
+            <Link to="/pricing" className="flex items-center space-x-1 text-gray-400 hover:text-primary transition-all duration-300">
+              <CreditCard className="w-4 h-4" />
+              <span>Pricing</span>
+            </Link>
 
             <WalletConnect 
               onWalletConnect={handleWalletConnect}
@@ -172,6 +177,11 @@ const Navbar = () => {
                 <span>{item.text}</span>
               </button>
             ))}
+            
+            <Link to="/pricing" onClick={toggleMobileMenu} className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-400 hover:bg-primary/10 hover:text-primary">
+              <CreditCard className="w-5 h-5" />
+              <span>Pricing</span>
+            </Link>
             
             <div className="px-4 py-2">
               <WalletConnect 

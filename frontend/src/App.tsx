@@ -9,9 +9,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 // Import Components & Pages
 import PGNavbar from "./components/PGNavbar";
 import MainNavbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import AuthPage from "@/pages/auth/AuthPage";
 import NotFound from "./pages/NotFound";
+import Pricing from "./pages/Pricing";
+import About from "./pages/About";
 
 import GOIndex from "./pages/GOIndex";
 import GOGetStarted from "./pages/GOGetStarted";
@@ -66,6 +69,8 @@ function Layout() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Index />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/about" element={<About />} />
 
         {/* Auth Routes */}
         <Route path="/auth/*" element={<AuthRoute><AuthPage /></AuthRoute>} />
@@ -105,6 +110,7 @@ function Layout() {
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </>
   );
 }
