@@ -30,6 +30,7 @@ import PartyNode from './NodeTypes/PartyNode';
 import PayeeNode from './NodeTypes/PayeeNode';
 import NodePropertiesDialog from './NodePropertiesDialog';
 import { saveCanvas, getCanvas, CanvasData, updateCanvas } from '@/services/mongodb';
+import GasOptimizer from '../GasOptimizer';
 
 const nodeTypes = {
   role: RoleNode,
@@ -607,9 +608,10 @@ const Playground = () => {
               <Controls />
             </ReactFlow>
           </div>
-          <div className="w-96">
+          <div className="w-96 bg-white border-l border-gray-200 p-4 overflow-y-auto">
+            <GasOptimizer contractCode={savedMoveCode} />
             <CodePreview 
-              code={generateCode()} 
+              code={savedMoveCode} 
               generateCode={generateCode} 
               savedCode={savedMoveCode}
               currentCanvasId={currentCanvasId}
