@@ -10,6 +10,7 @@ import {
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
+import WalletConnect from '../WalletConnect.tsx';
 import '@xyflow/react/dist/style.css';
 import { FilePlus, FolderOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -503,44 +504,52 @@ const Playground = () => {
     }
   }, [setNodes, setEdges]);
 
+  const handleWalletConnect = useCallback((address: string) => {
+    console.log("Wallet connected:", address);
+    // Add any wallet connection logic here
+  }, []);
+
   return (
     <div className="flex h-screen  bg-gray-50 pt-14">
       <Sidebar onNodeTemplateChange={handleNodeTemplateChange} />
       <div className="flex-1 flex flex-col">
-        <div className="bg-white border-b border-gray-200 p-2 flex items-center z-50">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={handleNewCanvas}
-            className="mr-2"
-          >
-            <FilePlus className="h-4 w-4 mr-1" />
-            New Canvas
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleOpenCanvasMenu}
-            className="mr-2"
-          >
-            <FolderOpen className="h-4 w-4 mr-1" />
-            Load Canvas
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleSaveCanvas}
-            className="mr-4"
-          >
-            Save
-          </Button>
-          <input
-            type="text"
-            value={canvasName}
-            onChange={(e) => setCanvasName(e.target.value)}
-            className="border border-gray-300 rounded px-2 py-1 text-sm"
-            placeholder="Canvas Name"
-          />
+        <div className="bg-white border-b border-gray-200 p-2 flex items-center justify-between z-50">
+          <div className="flex items-center">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleNewCanvas}
+              className="mr-2"
+            >
+              <FilePlus className="h-4 w-4 mr-1" />
+              New Canvas
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleOpenCanvasMenu}
+              className="mr-2"
+            >
+              <FolderOpen className="h-4 w-4 mr-1" />
+              Load Canvas
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleSaveCanvas}
+              className="mr-4"
+            >
+              Save
+            </Button>
+            <input
+              type="text"
+              value={canvasName}
+              onChange={(e) => setCanvasName(e.target.value)}
+              className="border border-gray-300 rounded px-2 py-1 text-sm"
+              placeholder="Canvas Name"
+            />
+          </div>
+          <WalletConnect onWalletConnect={handleWalletConnect} />
         </div>
         <div className="flex-1 flex">
           <div className="flex-1 h-full" ref={reactFlowWrapper}>

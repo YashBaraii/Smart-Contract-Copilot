@@ -15,7 +15,7 @@ const app = express();
 const _dirname = path.resolve();
 
 const corsOptions = {
-  origin: "https://smart-contract-copilot.onrender.com",
+  origin: ["https://smart-contract-copilot.onrender.com", "http://localhost:5173", "http://localhost:3000"],
   credentials: true
 };
 
