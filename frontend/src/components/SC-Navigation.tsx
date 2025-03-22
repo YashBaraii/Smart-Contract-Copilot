@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
@@ -22,7 +21,7 @@ const Navigation = () => {
   
   return (
     <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6 md:px-12",
+      "fixed top-[64px] left-0 right-0 z-50 transition-all duration-300 py-4 px-6 md:px-12",
       isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -55,7 +54,7 @@ const Navigation = () => {
       
       {/* Mobile Navigation */}
       <div className={cn(
-        "fixed inset-0 bg-white z-40 p-6 flex flex-col transition-all duration-300 transform md:hidden",
+        "fixed inset-0 top-[64px] bg-white z-40 p-6 flex flex-col transition-all duration-300 transform md:hidden",
         mobileMenuOpen ? "translate-x-0" : "translate-x-full"
       )}>
         <div className="flex justify-end">

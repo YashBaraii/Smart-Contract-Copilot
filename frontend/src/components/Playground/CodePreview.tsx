@@ -2,14 +2,27 @@ import { useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { useToast } from '@/hooks/use-toast';
+import { saveCanvas, updateCanvas } from '@/services/mongodb';
 
 interface CodePreviewProps {
   code: string;
   generateCode: () => string;
   savedCode?: string;
+  currentCanvasId?: string | null;
+  canvasName?: string;
+  nodes?: any[];
+  edges?: any[];
 }
 
-const CodePreview = ({ code, generateCode, savedCode }: CodePreviewProps) => {
+const CodePreview = ({ 
+  code, 
+  generateCode, 
+  savedCode,
+  currentCanvasId,
+  canvasName = "Untitled Canvas",
+  nodes = [],
+  edges = []
+}: CodePreviewProps) => {
   const [displayedCode, setDisplayedCode] = useState<string>('');
   const { toast } = useToast();
 
@@ -54,6 +67,58 @@ const CodePreview = ({ code, generateCode, savedCode }: CodePreviewProps) => {
     });
   };
 
+  const handleSaveCode = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to save your code.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const canvasData = {
+        name: canvasName,
+        nodes,
+        edges,
+        moveCode: displayedCode
+      };
+
+      if (currentCanvasId) {
+        // Update existing canvas
+        const success = await updateCanvas(currentCanvasId, canvasData);
+        if (success) {
+          toast({
+            title: "Code Saved",
+            description: "Your Move code has been saved successfully!",
+          });
+        } else {
+          throw new Error('Failed to update canvas');
+        }
+      } else {
+        // Create new canvas
+        const canvasId = await saveCanvas(canvasData);
+        if (canvasId) {
+          toast({
+            title: "Code Saved",
+            description: "Your Move code has been saved successfully!",
+          });
+        } else {
+          throw new Error('Failed to save canvas');
+        }
+      }
+    } catch (error: any) {
+      console.error('Error saving code:', error);
+      toast({
+        title: "Error Saving Code",
+        description: error.response?.data?.message || "There was a problem saving your code. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="h-full bg-white/80 backdrop-blur-sm border-l border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200">
@@ -91,6 +156,13 @@ const CodePreview = ({ code, generateCode, savedCode }: CodePreviewProps) => {
           disabled={!displayedCode}
         >
           Download
+        </button>
+        <button 
+          className="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+          onClick={handleSaveCode}
+          disabled={!displayedCode}
+        >
+          Save Code
         </button>
       </div>
     </div>

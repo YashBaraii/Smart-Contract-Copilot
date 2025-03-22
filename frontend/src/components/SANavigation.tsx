@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -62,7 +61,7 @@ const Navigation = ({ className }: NavigationProps) => {
   return (
     <nav 
       className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        "fixed top-[64px] inset-x-0 z-50 transition-all duration-300",
         scrolled ? "bg-white/80 backdrop-blur-lg shadow-sm" : "bg-transparent",
         className
       )}
@@ -159,7 +158,7 @@ const Navigation = ({ className }: NavigationProps) => {
 
       {/* Mobile menu */}
       <div className={cn("md:hidden transition-all duration-300 ease-in-out", isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden")}>
-        <div className="pt-2 pb-3 space-y-1 bg-white shadow-lg rounded-b-lg">
+        <div className="pt-2 pb-3 space-y-1 bg-white shadow-lg rounded-b-lg z-50">
           {navLinks.map((link) => (
             <React.Fragment key={link.name}>
               {link.dropdown ? (

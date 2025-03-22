@@ -42,6 +42,7 @@ export interface CanvasData {
   moveCode?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  user?: string;
 }
 
 export async function saveCanvas(canvasData: CanvasData): Promise<string | null> {
@@ -58,6 +59,10 @@ export async function saveCanvas(canvasData: CanvasData): Promise<string | null>
 
     const response = await api.post('/canvas', canvasData);
     const savedCanvas = response.data;
+
+    if (!savedCanvas._id) {
+      throw new Error('Failed to save canvas: No ID returned');
+    }
 
     toast({
       title: "Canvas saved",
@@ -88,7 +93,11 @@ export async function getCanvasList(): Promise<CanvasData[]> {
     }
 
     const response = await api.get('/canvas');
-    return response.data;
+    return response.data.map((canvas: any) => ({
+      ...canvas,
+      id: canvas._id,
+      moveCode: canvas.moveCode || ''
+    }));
   } catch (error: any) {
     console.error('Error getting canvas list:', error);
     toast({
@@ -113,7 +122,17 @@ export async function getCanvas(id: string): Promise<CanvasData | null> {
     }
 
     const response = await api.get(`/canvas/${id}`);
-    return response.data;
+    const canvas = response.data;
+
+    if (!canvas || !canvas._id) {
+      throw new Error('Invalid canvas data received');
+    }
+
+    return {
+      ...canvas,
+      id: canvas._id,
+      moveCode: canvas.moveCode || ''
+    };
   } catch (error: any) {
     console.error('Error getting canvas:', error);
     toast({
@@ -137,18 +156,22 @@ export async function updateCanvas(id: string, canvasData: CanvasData): Promise<
       return false;
     }
 
-    await api.put(`/canvas/${id}`, canvasData);
+    const response = await api.put(`/canvas/${id}`, canvasData);
+    
+    if (!response.data || !response.data._id) {
+      throw new Error('Failed to update canvas: Invalid response');
+    }
 
     toast({
       title: "Canvas updated",
       description: "Your canvas has been updated successfully.",
     });
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating canvas:', error);
     toast({
       title: "Error updating canvas",
-      description: "There was a problem updating your canvas.",
+      description: error.response?.data?.message || "There was a problem updating your canvas.",
       variant: "destructive",
     });
     return false;

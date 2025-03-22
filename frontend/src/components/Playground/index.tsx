@@ -29,7 +29,7 @@ import TokenNode from './NodeTypes/TokenNode';
 import PartyNode from './NodeTypes/PartyNode';
 import PayeeNode from './NodeTypes/PayeeNode';
 import NodePropertiesDialog from './NodePropertiesDialog';
-import { saveCanvas, getCanvas, CanvasData } from '@/services/mongodb';
+import { saveCanvas, getCanvas, CanvasData, updateCanvas } from '@/services/mongodb';
 
 const nodeTypes = {
   role: RoleNode,
@@ -72,6 +72,7 @@ const Playground = () => {
   const [canvasName, setCanvasName] = useState<string>("Untitled Canvas");
   const [isCanvasMenuOpen, setIsCanvasMenuOpen] = useState(false);
   const [savedMoveCode, setSavedMoveCode] = useState<string>('');
+  const [currentCanvasId, setCurrentCanvasId] = useState<string | null>(null);
   
   const developerMode = false;
 
@@ -434,24 +435,6 @@ const Playground = () => {
     return code;
   }, [nodes, edges, identifyRelationships]);
 
-  const handleNewCanvas = useCallback(() => {
-    if (nodes.length > 0 || edges.length > 0) {
-      // Ask for confirmation if there are items on the canvas
-      if (window.confirm("Are you sure you want to clear the canvas? All unsaved changes will be lost.")) {
-        setNodes([]);
-        setEdges([]);
-        setCanvasName("Untitled Canvas");
-        toast({
-          title: "Canvas cleared",
-          description: "Started a new canvas.",
-        });
-      }
-    } else {
-      // If canvas is already empty, just reset the name
-      setCanvasName("Untitled Canvas");
-    }
-  }, [nodes, edges, setNodes, setEdges]);
-
   const handleSaveCanvas = useCallback(async () => {
     try {
       // Save the current canvas to MongoDB
@@ -462,8 +445,20 @@ const Playground = () => {
         moveCode: generateCode() // Include the generated Move code
       };
       
-      const canvasId = await saveCanvas(canvasData);
+      let canvasId;
+      if (currentCanvasId) {
+        // Update existing canvas
+        const success = await updateCanvas(currentCanvasId, canvasData);
+        if (success) {
+          canvasId = currentCanvasId;
+        }
+      } else {
+        // Create new canvas
+        canvasId = await saveCanvas(canvasData);
+      }
+
       if (canvasId) {
+        setCurrentCanvasId(canvasId);
         toast({
           title: "Canvas saved",
           description: "Your canvas has been saved successfully.",
@@ -477,7 +472,27 @@ const Playground = () => {
         variant: "destructive",
       });
     }
-  }, [canvasName, nodes, edges, generateCode]);
+  }, [canvasName, nodes, edges, generateCode, currentCanvasId]);
+
+  const handleNewCanvas = useCallback(() => {
+    if (nodes.length > 0 || edges.length > 0) {
+      // Ask for confirmation if there are items on the canvas
+      if (window.confirm("Are you sure you want to clear the canvas? All unsaved changes will be lost.")) {
+        setNodes([]);
+        setEdges([]);
+        setCanvasName("Untitled Canvas");
+        setCurrentCanvasId(null); // Reset the current canvas ID
+        toast({
+          title: "Canvas cleared",
+          description: "Started a new canvas.",
+        });
+      }
+    } else {
+      // If canvas is already empty, just reset the name
+      setCanvasName("Untitled Canvas");
+      setCurrentCanvasId(null); // Reset the current canvas ID
+    }
+  }, [nodes, edges, setNodes, setEdges]);
 
   const handleOpenCanvasMenu = useCallback(() => {
     setIsCanvasMenuOpen(true);
@@ -501,6 +516,7 @@ const Playground = () => {
           setEdges(fullCanvas.edges || []);
           setCanvasName(fullCanvas.name);
           setSavedMoveCode(fullCanvas.moveCode || '');
+          setCurrentCanvasId(fullCanvas.id || null); // Set the current canvas ID
           
           toast({
             title: "Canvas loaded",
@@ -596,6 +612,10 @@ const Playground = () => {
               code={generateCode()} 
               generateCode={generateCode} 
               savedCode={savedMoveCode}
+              currentCanvasId={currentCanvasId}
+              canvasName={canvasName}
+              nodes={nodes}
+              edges={edges}
             />
           </div>
         </div>

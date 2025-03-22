@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -25,7 +24,7 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out px-4 md:px-6",
+        "fixed top-[64px] left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out px-4 md:px-6",
         {
           "py-4 bg-transparent": !isScrolled,
           "py-3 bg-white/80 backdrop-blur-md shadow-sm": isScrolled,
@@ -90,7 +89,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-md p-4 animate-fade-in">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-md p-4 animate-fade-in z-50">
           <nav className="flex flex-col space-y-4 mb-4">
             <NavLinks />
           </nav>
