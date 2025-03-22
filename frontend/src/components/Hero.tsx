@@ -66,29 +66,13 @@ const Hero = () => {
             </Link>
             <Button
               variant="outline"
-              onClick={() => setShowDemo(!showDemo)} // Toggle Video
+              onClick={() => setShowDemo(true)}
               className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               <PlayCircle className="w-5 h-5 mr-2" />
-              {showDemo ? "Hide Demo" : "Watch Live Demo"}
+              Watch Live Demo
             </Button>
           </div>
-
-          {/* YouTube Video Section */}
-          {showDemo && (
-            <div className="w-full max-w-3xl aspect-video mt-6">
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/l6dWKZIxnRQ"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="rounded-lg shadow-lg"
-              />
-            </div>
-          )}
 
           {/* Trust Signals */}
           <div className="mb-12">
@@ -151,8 +135,17 @@ const Hero = () => {
                 <X className="w-6 h-6" />
               </Button>
             </div>
-            <div className="aspect-video bg-black/20 rounded-lg flex items-center justify-center">
-              <p className="text-gray-400">Demo video will be embedded here</p>
+            <div className="aspect-video bg-black/20 rounded-lg overflow-hidden">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/l6dWKZIxnRQ"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="rounded-lg"
+              />
             </div>
           </div>
         </div>
