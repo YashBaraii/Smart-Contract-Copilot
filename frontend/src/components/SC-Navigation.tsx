@@ -30,7 +30,7 @@ const Navigation = () => {
             <div className="h-8 w-8 rounded-md bg-primary text-white grid place-items-center font-mono">
               &lt;/&gt;
             </div>
-            <span>Smart CodeLab</span>
+            <span>CodeLab</span>
           </a>
         </div>
         
