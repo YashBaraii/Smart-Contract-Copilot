@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home, FileCode, Book, Lock, User, LogOut, Menu, X, MessageSquare } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import WalletConnect from "./WalletConnect";
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -50,6 +51,21 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleWalletConnect = (address: string) => {
+    console.log("Wallet connected:", address);
+    // Add any wallet connection logic here
+  };
+
+  const handleWalletDisconnect = () => {
+    console.log("Wallet disconnected");
+    // Add any wallet disconnection logic here
+  };
+
+  const handleWalletError = (error: string) => {
+    console.error("Wallet error:", error);
+    // Add any error handling logic here
+  };
+
   const navItems = [
     { id: "home", icon: <Home className="w-4 h-4" />, text: "Home" },
     { id: "features", icon: <FileCode className="w-4 h-4" />, text: "Features" },
@@ -84,6 +100,12 @@ const Navbar = () => {
                 <span>{item.text}</span>
               </button>
             ))}
+
+            <WalletConnect 
+              onWalletConnect={handleWalletConnect}
+              onWalletDisconnect={handleWalletDisconnect}
+              onError={handleWalletError}
+            />
 
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
@@ -134,63 +156,69 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4">
-            <div className="flex flex-col space-y-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                    activeSection === item.id
-                      ? "bg-primary/20 text-primary"
-                      : "text-gray-400 hover:bg-primary/10 hover:text-primary"
-                  }`}
+        <div className={`md:hidden py-4 space-y-4 ${isMobileMenuOpen ? "block" : "hidden"}`}>
+          <div className="flex flex-col space-y-4">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+                  activeSection === item.id
+                    ? "bg-primary/20 text-primary"
+                    : "text-gray-400 hover:bg-primary/10 hover:text-primary"
+                }`}
+              >
+                {item.icon}
+                <span>{item.text}</span>
+              </button>
+            ))}
+            
+            <div className="px-4 py-2">
+              <WalletConnect 
+                onWalletConnect={handleWalletConnect}
+                onWalletDisconnect={handleWalletDisconnect}
+                onError={handleWalletError}
+              />
+            </div>
+            
+            {isAuthenticated ? (
+              <>
+                <div className="text-primary flex items-center px-4 py-2">
+                  <User className="w-5 h-5 mr-2" />
+                  <span>{user?.name}</span>
+                </div>
+                <Button
+                  onClick={() => {
+                    logout();
+                    toggleMobileMenu();
+                  }}
+                  variant="outline"
+                  className="w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10"
                 >
-                  {item.icon}
-                  <span>{item.text}</span>
-                </button>
-              ))}
-              
-              {isAuthenticated ? (
-                <>
-                  <div className="text-primary flex items-center px-4 py-2">
-                    <User className="w-5 h-5 mr-2" />
-                    <span>{user?.name}</span>
-                  </div>
+                  <LogOut className="w-5 h-5 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={toggleMobileMenu}>
                   <Button
-                    onClick={() => {
-                      logout();
-                      toggleMobileMenu();
-                    }}
                     variant="outline"
                     className="w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10"
                   >
-                    <LogOut className="w-5 h-5 mr-2" />
-                    Logout
+                    Login
                   </Button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" onClick={toggleMobileMenu}>
-                    <Button
-                      variant="outline"
-                      className="w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10"
-                    >
-                      Login
-                    </Button>
-                  </Link>
-                  <Link to="/signup" onClick={toggleMobileMenu}>
-                    <Button className="w-full bg-primary hover:bg-primary-dark text-white">
-                      <Lock className="w-5 h-5 mr-2" />
-                      Sign Up
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
+                </Link>
+                <Link to="/signup" onClick={toggleMobileMenu}>
+                  <Button className="w-full bg-primary hover:bg-primary-dark text-white">
+                    <Lock className="w-5 h-5 mr-2" />
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
