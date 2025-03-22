@@ -1,8 +1,37 @@
-
 import { toast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
-// MongoDB connection string - in a real app, this should be in environment variables
-const MONGODB_URI = "mongodb+srv://<username>:<password>@<your-cluster-url>/floweditor?retryWrites=true&w=majority";
+// Create axios instance with base URL
+const api = axios.create({
+  baseURL: import.meta.env.DEV ? 'http://localhost:5000/api' : 'https://smart-contract-copilot.onrender.com/api',
+});
+
+// Add request interceptor to add token to headers
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login if unauthorized
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // This is a placeholder - replace with actual MongoDB connection when deploying
 export interface CanvasData {
@@ -10,25 +39,36 @@ export interface CanvasData {
   name: string;
   nodes: any[];
   edges: any[];
+  moveCode?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export async function saveCanvas(canvasData: CanvasData): Promise<string | null> {
   try {
-    console.log('Saving canvas to MongoDB:', canvasData);
-    // In a real implementation, this would connect to MongoDB
-    // For now we'll just simulate success
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to save your canvas.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    const response = await api.post('/canvas', canvasData);
+    const savedCanvas = response.data;
+
     toast({
       title: "Canvas saved",
-      description: "Your canvas has been saved to the database.",
+      description: "Your canvas has been saved successfully.",
     });
-    return "canvas-id-123"; // Simulated ID
-  } catch (error) {
+    return savedCanvas._id;
+  } catch (error: any) {
     console.error('Error saving canvas:', error);
     toast({
       title: "Error saving canvas",
-      description: "There was a problem saving your canvas.",
+      description: error.response?.data?.message || "There was a problem saving your canvas.",
       variant: "destructive",
     });
     return null;
@@ -37,20 +77,23 @@ export async function saveCanvas(canvasData: CanvasData): Promise<string | null>
 
 export async function getCanvasList(): Promise<CanvasData[]> {
   try {
-    // In a real implementation, this would fetch from MongoDB
-    // For now we'll just return mock data
-    console.log('Getting canvas list from MongoDB');
-    return [
-      { id: 'canvas-1', name: 'ERC-20 Token Contract', nodes: [], edges: [], createdAt: new Date(), updatedAt: new Date() },
-      { id: 'canvas-2', name: 'NFT Marketplace', nodes: [], edges: [], createdAt: new Date(), updatedAt: new Date() },
-      { id: 'canvas-3', name: 'DAO Governance', nodes: [], edges: [], createdAt: new Date(), updatedAt: new Date() },
-      { id: 'canvas-4', name: 'Staking Contract', nodes: [], edges: [], createdAt: new Date(), updatedAt: new Date() }
-    ];
-  } catch (error) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to view your canvases.",
+        variant: "destructive",
+      });
+      return [];
+    }
+
+    const response = await api.get('/canvas');
+    return response.data;
+  } catch (error: any) {
     console.error('Error getting canvas list:', error);
     toast({
       title: "Error loading canvases",
-      description: "There was a problem loading your saved canvases.",
+      description: error.response?.data?.message || "There was a problem loading your saved canvases.",
       variant: "destructive",
     });
     return [];
@@ -59,165 +102,85 @@ export async function getCanvasList(): Promise<CanvasData[]> {
 
 export async function getCanvas(id: string): Promise<CanvasData | null> {
   try {
-    console.log('Getting canvas from MongoDB:', id);
-    // In a real implementation, this would fetch from MongoDB
-    // For now we'll simulate different canvases based on id
-    switch (id) {
-      case 'canvas-1':
-        return {
-          id,
-          name: 'ERC-20 Token Contract',
-          nodes: [
-            {
-              id: 'token-1',
-              type: 'token',
-              position: { x: 250, y: 150 },
-              data: { label: 'MyToken', type: 'token' }
-            },
-            {
-              id: 'action-1',
-              type: 'action',
-              position: { x: 100, y: 300 },
-              data: { label: 'Mint', type: 'action' }
-            },
-            {
-              id: 'action-2',
-              type: 'action',
-              position: { x: 400, y: 300 },
-              data: { label: 'Transfer', type: 'action' }
-            }
-          ],
-          edges: [
-            { id: 'e1-2', source: 'token-1', target: 'action-1' },
-            { id: 'e1-3', source: 'token-1', target: 'action-2' }
-          ]
-        };
-      case 'canvas-2':
-        return {
-          id,
-          name: 'NFT Marketplace',
-          nodes: [
-            {
-              id: 'token-1',
-              type: 'token',
-              position: { x: 250, y: 100 },
-              data: { label: 'NFT', type: 'token' }
-            },
-            {
-              id: 'action-1',
-              type: 'action',
-              position: { x: 100, y: 250 },
-              data: { label: 'List', type: 'action' }
-            },
-            {
-              id: 'action-2',
-              type: 'action',
-              position: { x: 400, y: 250 },
-              data: { label: 'Buy', type: 'action' }
-            },
-            {
-              id: 'role-1',
-              type: 'role',
-              position: { x: 250, y: 400 },
-              data: { label: 'Marketplace', type: 'role' }
-            }
-          ],
-          edges: [
-            { id: 'e1-2', source: 'token-1', target: 'action-1' },
-            { id: 'e1-3', source: 'token-1', target: 'action-2' },
-            { id: 'e2-4', source: 'action-1', target: 'role-1' },
-            { id: 'e3-4', source: 'action-2', target: 'role-1' }
-          ]
-        };
-      case 'canvas-3':
-        return {
-          id,
-          name: 'DAO Governance',
-          nodes: [
-            {
-              id: 'token-1',
-              type: 'token',
-              position: { x: 250, y: 100 },
-              data: { label: 'Governance Token', type: 'token' }
-            },
-            {
-              id: 'action-1',
-              type: 'action',
-              position: { x: 100, y: 250 },
-              data: { label: 'Propose', type: 'action' }
-            },
-            {
-              id: 'action-2',
-              type: 'action',
-              position: { x: 400, y: 250 },
-              data: { label: 'Vote', type: 'action' }
-            },
-            {
-              id: 'action-3',
-              type: 'action',
-              position: { x: 250, y: 400 },
-              data: { label: 'Execute', type: 'action' }
-            }
-          ],
-          edges: [
-            { id: 'e1-2', source: 'token-1', target: 'action-1' },
-            { id: 'e1-3', source: 'token-1', target: 'action-2' },
-            { id: 'e2-4', source: 'action-1', target: 'action-3' },
-            { id: 'e3-4', source: 'action-2', target: 'action-3' }
-          ]
-        };
-      case 'canvas-4':
-        return {
-          id,
-          name: 'Staking Contract',
-          nodes: [
-            {
-              id: 'token-1',
-              type: 'token',
-              position: { x: 200, y: 100 },
-              data: { label: 'Reward Token', type: 'token' }
-            },
-            {
-              id: 'token-2',
-              type: 'token',
-              position: { x: 400, y: 100 },
-              data: { label: 'Stake Token', type: 'token' }
-            },
-            {
-              id: 'action-1',
-              type: 'action',
-              position: { x: 200, y: 250 },
-              data: { label: 'Stake', type: 'action' }
-            },
-            {
-              id: 'action-2',
-              type: 'action',
-              position: { x: 400, y: 250 },
-              data: { label: 'Withdraw', type: 'action' }
-            },
-            {
-              id: 'action-3',
-              type: 'action',
-              position: { x: 300, y: 400 },
-              data: { label: 'Claim Rewards', type: 'action' }
-            }
-          ],
-          edges: [
-            { id: 'e1-3', source: 'token-1', target: 'action-3' },
-            { id: 'e2-3', source: 'token-2', target: 'action-1' },
-            { id: 'e2-4', source: 'token-2', target: 'action-2' }
-          ]
-        };
-      default:
-        return {
-          id,
-          name: `Canvas ${id}`,
-          nodes: [],
-          edges: []
-        };
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to load your canvas.",
+        variant: "destructive",
+      });
+      return null;
     }
-  } catch (error) {
+
+    const response = await api.get(`/canvas/${id}`);
+    return response.data;
+  } catch (error: any) {
     console.error('Error getting canvas:', error);
+    toast({
+      title: "Error loading canvas",
+      description: error.response?.data?.message || "There was a problem loading your canvas.",
+      variant: "destructive",
+    });
     return null;
+  }
+}
+
+export async function updateCanvas(id: string, canvasData: CanvasData): Promise<boolean> {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to update your canvas.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    await api.put(`/canvas/${id}`, canvasData);
+
+    toast({
+      title: "Canvas updated",
+      description: "Your canvas has been updated successfully.",
+    });
+    return true;
+  } catch (error) {
+    console.error('Error updating canvas:', error);
+    toast({
+      title: "Error updating canvas",
+      description: "There was a problem updating your canvas.",
+      variant: "destructive",
+    });
+    return false;
+  }
+}
+
+export async function deleteCanvas(id: string): Promise<boolean> {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to delete your canvas.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    await api.delete(`/canvas/${id}`);
+
+    toast({
+      title: "Canvas deleted",
+      description: "Your canvas has been deleted successfully.",
+    });
+    return true;
+  } catch (error) {
+    console.error('Error deleting canvas:', error);
+    toast({
+      title: "Error deleting canvas",
+      description: "There was a problem deleting your canvas.",
+      variant: "destructive",
+    });
+    return false;
   }
 }

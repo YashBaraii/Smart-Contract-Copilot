@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import moveRoutes from './routes/moveRoutes.js';
 import deployRoutes from './routes/deployRoutes.js';
+import canvasRoutes from './routes/canvasRoutes.js';
 import path from 'path';
 import exp from 'constants';
 
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/move', moveRoutes);
 app.use('/api/deploy', deployRoutes);
+app.use('/api/canvas', canvasRoutes);
 
 app.use(express.static(path.join(_dirname, '/frontend/dist')));
 app.get('*', (_, res) => {

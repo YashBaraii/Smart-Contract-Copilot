@@ -1,12 +1,24 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { useToast } from '@/hooks/use-toast';
 
-const CodePreview = ({ code, generateCode }: { code: string, generateCode: () => string }) => {
+interface CodePreviewProps {
+  code: string;
+  generateCode: () => string;
+  savedCode?: string;
+}
+
+const CodePreview = ({ code, generateCode, savedCode }: CodePreviewProps) => {
   const [displayedCode, setDisplayedCode] = useState<string>('');
   const { toast } = useToast();
+
+  // Show saved code when loading a canvas
+  useEffect(() => {
+    if (savedCode) {
+      setDisplayedCode(savedCode);
+    }
+  }, [savedCode]);
 
   const handleGenerateCode = () => {
     const newCode = generateCode();

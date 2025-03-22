@@ -71,6 +71,7 @@ const Playground = () => {
   const [nodeTemplates, setNodeTemplates] = useState<Record<string, Record<string, NodeTemplate>>>({});
   const [canvasName, setCanvasName] = useState<string>("Untitled Canvas");
   const [isCanvasMenuOpen, setIsCanvasMenuOpen] = useState(false);
+  const [savedMoveCode, setSavedMoveCode] = useState<string>('');
   
   const developerMode = false;
 
@@ -452,18 +453,31 @@ const Playground = () => {
   }, [nodes, edges, setNodes, setEdges]);
 
   const handleSaveCanvas = useCallback(async () => {
-    // Save the current canvas to MongoDB
-    const canvasData = {
-      name: canvasName,
-      nodes,
-      edges
-    };
-    
-    const canvasId = await saveCanvas(canvasData);
-    if (canvasId) {
-      console.log(`Canvas saved with ID: ${canvasId}`);
+    try {
+      // Save the current canvas to MongoDB
+      const canvasData = {
+        name: canvasName,
+        nodes,
+        edges,
+        moveCode: generateCode() // Include the generated Move code
+      };
+      
+      const canvasId = await saveCanvas(canvasData);
+      if (canvasId) {
+        toast({
+          title: "Canvas saved",
+          description: "Your canvas has been saved successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Error saving canvas:', error);
+      toast({
+        title: "Error saving canvas",
+        description: "There was a problem saving your canvas. Please try again.",
+        variant: "destructive",
+      });
     }
-  }, [canvasName, nodes, edges]);
+  }, [canvasName, nodes, edges, generateCode]);
 
   const handleOpenCanvasMenu = useCallback(() => {
     setIsCanvasMenuOpen(true);
@@ -476,12 +490,18 @@ const Playground = () => {
   const handleCanvasSelect = useCallback(async (canvas: CanvasData) => {
     if (canvas.id) {
       try {
-        // Get the full canvas data if needed
         const fullCanvas = await getCanvas(canvas.id);
         if (fullCanvas) {
+          // Clear current canvas first
+          setNodes([]);
+          setEdges([]);
+          
+          // Set new canvas data
           setNodes(fullCanvas.nodes || []);
           setEdges(fullCanvas.edges || []);
           setCanvasName(fullCanvas.name);
+          setSavedMoveCode(fullCanvas.moveCode || '');
+          
           toast({
             title: "Canvas loaded",
             description: `${fullCanvas.name} has been loaded into the editor.`,
@@ -497,7 +517,7 @@ const Playground = () => {
         console.error('Error loading canvas:', error);
         toast({
           title: "Error",
-          description: "An error occurred while loading the canvas.",
+          description: "An error occurred while loading the canvas. Please try again.",
           variant: "destructive",
         });
       }
@@ -572,7 +592,11 @@ const Playground = () => {
             </ReactFlow>
           </div>
           <div className="w-96">
-            <CodePreview code={generateCode()} generateCode={generateCode} />
+            <CodePreview 
+              code={generateCode()} 
+              generateCode={generateCode} 
+              savedCode={savedMoveCode}
+            />
           </div>
         </div>
       </div>
