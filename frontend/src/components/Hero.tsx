@@ -46,15 +46,15 @@ const Hero = () => {
           <div className="inline-block animate-float">
             <FileCode className="w-16 h-16 text-primary mx-auto mb-6" />
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
             Smart Contract Copilot
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Create, audit, and deploy secure smart contracts without writing code. Perfect for developers and entrepreneurs.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link to="/builder">
               <Button className="bg-primary hover:bg-primary-dark text-white px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
@@ -62,15 +62,31 @@ const Hero = () => {
                 <ArrowRight className="w-5 h-5 ml-2 animate-pulse" />
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowDemo(true)}
+            <Button
+              variant="outline"
+              onClick={() => setShowDemo(!showDemo)} // Toggle Video
               className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               <PlayCircle className="w-5 h-5 mr-2" />
-              Watch Live Demo
+              {showDemo ? "Hide Demo" : "Watch Live Demo"}
             </Button>
           </div>
+
+          {/* YouTube Video Section */}
+          {showDemo && (
+            <div className="w-full max-w-3xl aspect-video mt-6">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/l6dWKZIxnRQ"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="rounded-lg shadow-lg"
+              />
+            </div>
+          )}
 
           {/* Trust Signals */}
           <div className="mb-12">
