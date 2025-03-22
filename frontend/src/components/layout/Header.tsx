@@ -36,7 +36,7 @@ const Header = () => {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold">A</span>
           </div>
-          <span className="text-lg font-medium font-display">Aptos Gas</span>
+          <span className="text-lg font-medium font-display">Gas Optimizer</span>
         </Link>
 
         {/* Desktop Navigation */}

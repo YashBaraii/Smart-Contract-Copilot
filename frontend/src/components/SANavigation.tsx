@@ -73,7 +73,7 @@ const Navigation = ({ className }: NavigationProps) => {
               <div className="h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center">
                 <span className="text-white font-bold">AS</span>
               </div>
-              <span className="ml-2 text-lg font-semibold">AptosSecure</span>
+              <span className="ml-2 text-lg font-semibold">Security Audit</span>
             </a>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               {navLinks.map((link) => (

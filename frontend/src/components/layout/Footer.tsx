@@ -11,7 +11,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">A</span>
               </div>
-              <span className="text-lg font-medium font-display">Aptos Gas</span>
+              <span className="text-lg font-medium font-display">Gas Optimizer</span>
             </Link>
             <p className="mt-4 text-sm text-gray-600 max-w-xs">
               Learn how to reduce transaction fees and improve execution efficiency in your Move smart contracts.
@@ -99,7 +99,7 @@ const Footer = () => {
         
         <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Aptos Gas Optimization. All rights reserved.
+            © {new Date().getFullYear()} Gas Optimizer Optimization. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex items-center space-x-6">
             <a href="#" className="text-gray-500 hover:text-blue-600 transition-colors">

@@ -47,6 +47,8 @@ const Hero = () => {
             <FileCode className="w-16 h-16 text-primary mx-auto mb-6" />
           </div>
 
+          <div>h</div>
+
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
             Smart Contract Copilot
           </h1>

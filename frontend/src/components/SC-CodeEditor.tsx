@@ -341,7 +341,7 @@ Execution failed!`);
           <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
             Interactive Move Lab
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">Try Smart CodeLab for Move</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mt-4 mb-4">Try Codelab for Move</h2>
           <p className="text-foreground/70 max-w-2xl mx-auto">
             Experience the power of AI-assisted blockchain development with our interactive Move editor.
             Write, run, and optimize Move modules directly in your browser.
