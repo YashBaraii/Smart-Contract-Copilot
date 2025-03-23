@@ -189,7 +189,7 @@ const teamMembers = [
     name: "Yash Barai",
     role: "AI/ML Engineer",
     image: "https://avatars.githubusercontent.com/u/166858346?v=4",
-    portfolio: "https://yashbarai.github.io", // Portfolio link
+    portfolio: "https://yashbarai.netlify.app", // Portfolio link
   },
   {
     name: "Sahil Giri",
