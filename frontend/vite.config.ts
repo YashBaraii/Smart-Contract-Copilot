@@ -10,16 +10,13 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   server: {
-    host: "localhost",
-    port: 3000,
+    host: "::",
+    port: 8080,
   },
   plugins: [react(), componentTagger()], // Ensure it's an array
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"), // Fixed alias path
+      "@": path.resolve(__dirname, "./src"), // Fixed alias path
     },
-  },
-  define: {
-    "import.meta.env.VITE_API_BASE_URL": JSON.stringify("https://smart-contract-copilot.onrender.com"),
   },
 });

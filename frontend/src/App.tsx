@@ -13,7 +13,7 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import AuthPage from "@/pages/auth/AuthPage";
 import NotFound from "./pages/NotFound";
-import Pricing from "./pages/Pricing";
+import Pricing from "./components/Pricing.tsx";
 import About from "./pages/About";
 
 import GOIndex from "./pages/GOIndex";

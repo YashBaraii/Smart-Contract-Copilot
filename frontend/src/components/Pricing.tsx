@@ -56,10 +56,10 @@ export default function Pricing() {
     <div className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-primary">Pricing</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Pricing</h2>
+          {/* <p className="mt-2 text-3xl font-bold tracking-tight sm:text-5xl text-white">
             Choose the right plan for&nbsp;you
-          </p>
+          </p> */}
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             Select the perfect plan that suits your smart contract development needs.
           </p>
@@ -73,15 +73,15 @@ export default function Pricing() {
               }`}
             >
               <CardHeader>
-                <CardTitle>{tier.name}</CardTitle>
-                <CardDescription>{tier.description}</CardDescription>
+                <CardTitle className="text-white">{tier.name}</CardTitle>
+                <CardDescription className="text-gray-300">{tier.description}</CardDescription>
                 <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">{tier.price.monthly}</span>
-                  <span className="ml-1 text-sm font-semibold leading-6 text-muted-foreground">/month</span>
+                  <span className="text-4xl font-bold tracking-tight text-white">{tier.price.monthly}</span>
+                  <span className="ml-1 text-sm font-semibold leading-6  text-gray-300">/month</span>
                 </div>
               </CardHeader>
               <CardContent>
-                <ul role="list" className="mt-8 space-y-3 text-sm leading-6">
+                <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-white">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex gap-x-3">
                       <Check className="h-6 w-5 flex-none text-primary" aria-hidden="true" />

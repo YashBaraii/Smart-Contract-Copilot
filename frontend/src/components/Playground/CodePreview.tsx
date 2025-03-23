@@ -69,55 +69,60 @@ const CodePreview = ({
 
   const handleSaveCode = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to save your code.",
-          variant: "destructive",
-        });
-        return;
-      }
+        const token = localStorage.getItem('token');
+        console.log("Token:", token); // Debugging Log
 
-      const canvasData = {
-        name: canvasName,
-        nodes,
-        edges,
-        moveCode: displayedCode
-      };
+        if (!token) {
+            toast({
+                title: "Authentication required",
+                description: "Please log in to save your code.",
+                variant: "destructive",
+            });
+            return;
+        }
 
-      if (currentCanvasId) {
-        // Update existing canvas
-        const success = await updateCanvas(currentCanvasId, canvasData);
-        if (success) {
-          toast({
-            title: "Code Saved",
-            description: "Your Move code has been saved successfully!",
-          });
+        const canvasData = {
+            name: canvasName,
+            nodes,
+            edges,
+            moveCode: displayedCode
+        };
+
+        console.log("Canvas Data:", canvasData); // Debugging Log
+
+        if (currentCanvasId) {
+            console.log("Updating canvas with ID:", currentCanvasId); // Debugging Log
+            const success = await updateCanvas(currentCanvasId, canvasData);
+            if (success) {
+                toast({
+                    title: "Code Saved",
+                    description: "Your Move code has been saved successfully!",
+                });
+            } else {
+                throw new Error('Failed to update canvas');
+            }
         } else {
-          throw new Error('Failed to update canvas');
+            console.log("Creating a new canvas"); // Debugging Log
+            const canvasId = await saveCanvas(canvasData);
+            if (canvasId) {
+                toast({
+                    title: "Code Saved",
+                    description: "Your Move code has been saved successfully!",
+                });
+            } else {
+                throw new Error('Failed to save canvas');
+            }
         }
-      } else {
-        // Create new canvas
-        const canvasId = await saveCanvas(canvasData);
-        if (canvasId) {
-          toast({
-            title: "Code Saved",
-            description: "Your Move code has been saved successfully!",
-          });
-        } else {
-          throw new Error('Failed to save canvas');
-        }
-      }
     } catch (error: any) {
-      console.error('Error saving code:', error);
-      toast({
-        title: "Error Saving Code",
-        description: error.response?.data?.message || "There was a problem saving your code. Please try again.",
-        variant: "destructive",
-      });
+        console.error('Error saving code:', error);
+        toast({
+            title: "Error Saving Code",
+            description: error.response?.data?.message || "There was a problem saving your code. Please try again.",
+            variant: "destructive",
+        });
     }
-  };
+};
+
 
   return (
     <div className="h-full bg-white/80 backdrop-blur-sm border-l border-gray-200 flex flex-col">

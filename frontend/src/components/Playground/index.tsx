@@ -586,7 +586,7 @@ const Playground = () => {
               placeholder="Canvas Name"
             />
           </div>
-          <WalletConnect onWalletConnect={handleWalletConnect} />
+          {/* <WalletConnect onWalletConnect={handleWalletConnect} /> */}
         </div>
         <div className="flex-1 flex">
           <div className="flex-1 h-full" ref={reactFlowWrapper}>

@@ -71,6 +71,7 @@ const Navbar = () => {
     { id: "features", icon: <FileCode className="w-4 h-4" />, text: "Features" },
     { id: "testimonials", icon: <Book className="w-4 h-4" />, text: "Testimonials" },
     { id: "contact", icon: <MessageSquare className="w-4 h-4" />, text: "Contact" },
+    { id: "pricing", icon: <CreditCard className="w-4 h-4" />, text: "Pricing" },
   ];
 
   return (
@@ -100,11 +101,7 @@ const Navbar = () => {
                 <span>{item.text}</span>
               </button>
             ))}
-            
-            <Link to="/pricing" className="flex items-center space-x-1 text-gray-400 hover:text-primary transition-all duration-300">
-              <CreditCard className="w-4 h-4" />
-              <span>Pricing</span>
-            </Link>
+          
 
             <WalletConnect 
               onWalletConnect={handleWalletConnect}
