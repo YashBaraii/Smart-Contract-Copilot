@@ -19,7 +19,15 @@ const _dirname = path.resolve();
 connectDB();
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+
+const corsOptions = {
+  origin: "https://smart-contract-copilot-pr12.onrender.com",
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+
 app.use(express.json());
 
 // Routes

@@ -212,7 +212,8 @@ import axios from "axios";
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // baseURL: "http://localhost:5000/api",
+  baseURL: "https://smart-contract-copilot-pr12.onrender.com/api",
 });
 
 // Add request interceptor to add token to headers

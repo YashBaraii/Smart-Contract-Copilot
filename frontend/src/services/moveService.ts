@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:5000"; // Change if deployed
+// const API_BASE_URL = "http://localhost:5000"; // Change if deployed
+const API_BASE_URL = "https://smart-contract-copilot-pr12.onrender.com"; // Change if deployed
 
 // Store Move Code
 export const storeMoveCode = async (moveCode: string) => {
